@@ -1,0 +1,54 @@
+name: Auto Promote develop → main
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:   # Allows you to trigger it manually too
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: develop
+          title: "🚀 Auto-promote: develop → main"
+          body: |
+            ### Automated Promotion
+            
+            This Pull Request was automatically created because new changes were pushed to `develop`.
+            
+            - **Source**: `develop`
+            - **Target**: `main`
+            - Auto-merge is enabled
+            
+            Once all required checks pass, this PR will be merged automatically.
+          labels: |
+            auto-promotion
+            develop-to-main
+          draft: false
+          delete-branch: false
+
+      - name: Enable Auto-Merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} \
+            --auto \
+            --merge \
+            --delete-branch=false
