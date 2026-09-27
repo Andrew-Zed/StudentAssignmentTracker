@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-  workflow_dispatch:   # Allows you to trigger it manually too
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,36 +19,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create or update Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: develop
-          title: "🚀 Auto-promote: develop → main"
-          body: |
-            ### Automated Promotion
-            
-            This Pull Request was automatically created because new changes were pushed to `develop`.
-            
-            - **Source**: `develop`
-            - **Target**: `main`
-            - Auto-merge is enabled
-            
-            Once all required checks pass, this PR will be merged automatically.
-          labels: |
-            auto-promotion
-            develop-to-main
-          draft: false
-          delete-branch: false
-
-      - name: Enable Auto-Merge
-        if: steps.cpr.outputs.pull-request-number != ''
+      - name: Create Pull Request (if needed)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} \
-            --auto \
-            --merge \
-            --delete-branch=false
+          existing_pr=$(gh pr list --base main --head develop --json number --jq '.[0].number')
+
+          if [ -z "$existing_pr" ]; then
+            echo "Creating new PR from develop → main"
+            gh pr create \
+              --base main \
+              --head develop \
+              --title "🚀 Auto-promote: develop → main" \
+              --body "This Pull Request was automatically created because new changes were pushed to develop.
+
+          Auto-merge will be enabled."
+          else
+            echo "PR already exists: #$existing_pr"
+          fi
+
+      - name: Enable Auto-Merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number=$(gh pr list --base main --head develop --json number --jq '.[0].number')
+
+          if [ -n "$pr_number" ]; then
+            echo "Enabling auto-merge on PR #$pr_number"
+            gh pr merge "$pr_number" --auto --merge
+          else
+            echo "No PR found to enable auto-merge"
+          fi
