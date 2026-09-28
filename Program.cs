@@ -1,10 +1,16 @@
 using StudentAssignmentTracker.Components;
+using Microsoft.EntityFrameworkCore;
+using StudentAssignmentTracker.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
