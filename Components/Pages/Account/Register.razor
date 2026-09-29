@@ -1,9 +1,10 @@
 @page "/account/register"
-@rendermode InteractiveServer
-@using Microsoft.AspNetCore.Identity
-@using StudentAssignmentTracker.Models
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@using Microsoft.AspNetCore.Components
+@using StudentAssignmentTracker.Interfaces
 @using StudentAssignmentTracker.ViewModels
-@inject UserManager<ApplicationUser> UserManager
+@using StudentAssignmentTracker.Services
+@inject IAuthService AuthService
 
 <PageTitle>Register</PageTitle>
 
@@ -22,7 +23,7 @@
 					}
 					else
 					{
-						<EditForm Model="Input" OnValidSubmit="RegisterAsync">
+						<EditForm Model="Input!" OnValidSubmit="RegisterAsync" FormName="register">
 							<DataAnnotationsValidator />
 							<ValidationSummary class="alert alert-danger" />
 
@@ -34,32 +35,32 @@
 							<div class="row g-3">
 								<div class="col-sm-6">
 									<label for="firstName" class="form-label">First name</label>
-									<InputText id="firstName" class="form-control" @bind-Value="Input.FirstName" autocomplete="given-name" />
-									<ValidationMessage For="@(() => Input.FirstName)" />
+									<InputText id="firstName" class="form-control" @bind-Value="Input!.FirstName" autocomplete="given-name" />
+									<ValidationMessage For="@(() => Input!.FirstName)" />
 								</div>
 
 								<div class="col-sm-6">
 									<label for="lastName" class="form-label">Last name</label>
-									<InputText id="lastName" class="form-control" @bind-Value="Input.LastName" autocomplete="family-name" />
-									<ValidationMessage For="@(() => Input.LastName)" />
+									<InputText id="lastName" class="form-control" @bind-Value="Input!.LastName" autocomplete="family-name" />
+									<ValidationMessage For="@(() => Input!.LastName)" />
 								</div>
 
 								<div class="col-12">
 									<label for="email" class="form-label">Email</label>
-									<InputText id="email" type="email" class="form-control" @bind-Value="Input.Email" autocomplete="email" />
-									<ValidationMessage For="@(() => Input.Email)" />
+									<InputText id="email" type="email" class="form-control" @bind-Value="Input!.Email" autocomplete="email" />
+									<ValidationMessage For="@(() => Input!.Email)" />
 								</div>
 
 								<div class="col-12">
 									<label for="password" class="form-label">Password</label>
-									<InputText id="password" type="password" class="form-control" @bind-Value="Input.Password" autocomplete="new-password" />
-									<ValidationMessage For="@(() => Input.Password)" />
+									<InputText id="password" type="password" class="form-control" @bind-Value="Input!.Password" autocomplete="new-password" />
+									<ValidationMessage For="@(() => Input!.Password)" />
 								</div>
 
 								<div class="col-12">
 									<label for="confirmPassword" class="form-label">Confirm password</label>
-									<InputText id="confirmPassword" type="password" class="form-control" @bind-Value="Input.ConfirmPassword" autocomplete="new-password" />
-									<ValidationMessage For="@(() => Input.ConfirmPassword)" />
+									<InputText id="confirmPassword" type="password" class="form-control" @bind-Value="Input!.ConfirmPassword" autocomplete="new-password" />
+									<ValidationMessage For="@(() => Input!.ConfirmPassword)" />
 								</div>
 
 								<div class="col-12">
@@ -77,27 +78,26 @@
 </div>
 
 @code {
-	private RegisterViewModel Input { get; set; } = new();
+	[SupplyParameterFromForm]
+	private RegisterViewModel? Input { get; set; }
 	private string? ErrorMessage { get; set; }
 	private bool IsSubmitting { get; set; }
 	private bool RegistrationComplete { get; set; }
 
+	protected override void OnInitialized()
+	{
+		Input ??= new();
+	}
+
 	private async Task RegisterAsync()
 	{
+		var input = Input!;
 		ErrorMessage = null;
 		IsSubmitting = true;
 
 		try
 		{
-			var user = new ApplicationUser
-			{
-				FirstName = Input.FirstName,
-				LastName = Input.LastName,
-				Email = Input.Email,
-				UserName = Input.Email
-			};
-
-			var result = await UserManager.CreateAsync(user, Input.Password);
+			var result = await AuthService.RegisterAsync(input);
 			if (result.Succeeded)
 			{
 				RegistrationComplete = true;

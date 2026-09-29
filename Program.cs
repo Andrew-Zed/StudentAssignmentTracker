@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Antiforgery;
 using StudentAssignmentTracker.Components;
 using Microsoft.EntityFrameworkCore;
 using StudentAssignmentTracker.Data;
+using StudentAssignmentTracker.Interfaces;
 using StudentAssignmentTracker.Models;
+using StudentAssignmentTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,10 @@ builder.Services
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => options.FallbackPolicy = options.DefaultPolicy);
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/account/login");
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -38,7 +44,22 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
 
-app.MapStaticAssets();
+app.MapPost("/account/logout", async (
+    HttpContext httpContext,
+    IAntiforgery antiforgery,
+    IAuthService authService) =>
+{
+    if (!await antiforgery.IsRequestValidAsync(httpContext))
+    {
+        return Results.BadRequest();
+    }
+
+    await authService.LogoutAsync();
+    return Results.LocalRedirect("/account/login");
+})
+    .RequireAuthorization();
+
+app.MapStaticAssets().AllowAnonymous();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
