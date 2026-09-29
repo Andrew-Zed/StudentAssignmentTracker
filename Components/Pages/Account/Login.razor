@@ -1,9 +1,10 @@
 @page "/account/login"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Identity
-@using StudentAssignmentTracker.Models
+@using StudentAssignmentTracker.Interfaces
 @using StudentAssignmentTracker.ViewModels
-@inject SignInManager<ApplicationUser> SignInManager
+@using StudentAssignmentTracker.Services
+@inject IAuthService AuthService
 @inject NavigationManager Navigation
 
 <PageTitle>Log in</PageTitle>
@@ -73,11 +74,7 @@
 	private async Task LoginAsync()
 	{
 		var input = Input!;
-		var result = await SignInManager.PasswordSignInAsync(
-			input.Email,
-			input.Password,
-			input.RememberMe,
-			lockoutOnFailure: true);
+		var result = await AuthService.LoginAsync(input);
 
 		if (result.Succeeded)
 		{
