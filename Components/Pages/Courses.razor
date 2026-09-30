@@ -1,0 +1,70 @@
+@page "/courses"
+
+<PageTitle>Courses - Student Assignment Tracker</PageTitle>
+
+<div class="courses-page">
+
+    <div class="page-header">
+        <div>
+            <h1>My Courses</h1>
+            <p>Manage your courses and keep track of your academic schedule.</p>
+        </div>
+
+        <a href="/courses/add" class="add-course-button">
+            + Add Course
+        </a>
+    </div>
+
+    <div class="courses-toolbar">
+        <div class="search-box">
+            <input type="text" placeholder="Search courses..." />
+        </div>
+
+        <select class="filter-select">
+            <option value="all">All Courses</option>
+            <option value="active">Active Courses</option>
+            <option value="completed">Completed Courses</option>
+        </select>
+    </div>
+
+    <div class="courses-grid">
+
+        <div class="course-card">
+            <div class="course-card-header">
+                <span class="course-code">CSE 325</span>
+                <button class="menu-button" type="button">⋮</button>
+            </div>
+
+            <h2>Software Engineering</h2>
+
+            <p class="instructor">
+                Instructor: Dr. Smith
+            </p>
+
+            <div class="course-card-footer">
+                <span>0 Assignments</span>
+                <span>Active</span>
+            </div>
+        </div>
+
+        <div class="course-card">
+            <div class="course-card-header">
+                <span class="course-code">CSE 310</span>
+                <button class="menu-button" type="button">⋮</button>
+            </div>
+
+            <h2>Mobile Application Development</h2>
+
+            <p class="instructor">
+                Instructor: Dr. Johnson
+            </p>
+
+            <div class="course-card-footer">
+                <span>0 Assignments</span>
+                <span>Active</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>

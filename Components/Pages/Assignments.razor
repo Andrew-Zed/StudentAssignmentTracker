@@ -1,0 +1,152 @@
+@page "/assignments"
+
+<PageTitle>Assignments - Student Assignment Tracker</PageTitle>
+
+<div class="assignments-page">
+
+    <div class="page-header">
+        <div>
+            <h1>My Assignments</h1>
+            <p>Manage your assignments and keep track of upcoming deadlines.</p>
+        </div>
+
+        <a href="/assignments/add" class="add-assignment-button">
+            + Add Assignment
+        </a>
+    </div>
+
+    <div class="assignments-toolbar">
+
+        <div class="search-box">
+            <input type="text" placeholder="Search assignments..." />
+        </div>
+
+        <select class="filter-select">
+            <option value="all">All Assignments</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="completed">Completed</option>
+            <option value="overdue">Overdue</option>
+        </select>
+
+        <select class="filter-select priority-filter">
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+        </select>
+
+    </div>
+
+    <div class="assignment-list">
+
+        <div class="assignment-card">
+
+            <div class="assignment-main">
+
+                <div class="assignment-icon">
+                    📝
+                </div>
+
+                <div class="assignment-info">
+                    <h2>Connect Four Project</h2>
+                    <p class="course-name">CSE 325 · Software Development</p>
+
+                    <div class="assignment-meta">
+                        <span>Due: October 2, 2026</span>
+                        <span class="priority high">High Priority</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="assignment-status">
+                <span class="status upcoming">Upcoming</span>
+
+                <div class="assignment-actions">
+                    <a href="/assignments/edit/1" class="edit-button">
+                        Edit
+                    </a>
+
+                    <button type="button" class="delete-button">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="assignment-card">
+
+            <div class="assignment-main">
+
+                <div class="assignment-icon">
+                    📚
+                </div>
+
+                <div class="assignment-info">
+                    <h2>Database Design Assignment</h2>
+                    <p class="course-name">CSE 325 · Software Development</p>
+
+                    <div class="assignment-meta">
+                        <span>Due: October 6, 2026</span>
+                        <span class="priority medium">Medium Priority</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="assignment-status">
+                <span class="status upcoming">Upcoming</span>
+
+                <div class="assignment-actions">
+                    <a href="/assignments/edit/2" class="edit-button">
+                        Edit
+                    </a>
+
+                    <button type="button" class="delete-button">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="assignment-card">
+
+            <div class="assignment-main">
+
+                <div class="assignment-icon">
+                    ✅
+                </div>
+
+                <div class="assignment-info">
+                    <h2>Web API Assignment</h2>
+                    <p class="course-name">CSE 325 · Software Development</p>
+
+                    <div class="assignment-meta">
+                        <span>Completed</span>
+                        <span class="priority low">Low Priority</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="assignment-status">
+                <span class="status completed">Completed</span>
+
+                <div class="assignment-actions">
+                    <a href="/assignments/edit/3" class="edit-button">
+                        View
+                    </a>
+
+                    <button type="button" class="delete-button">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

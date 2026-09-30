@@ -1,0 +1,163 @@
+@page "/assignments/add"
+
+<PageTitle>Add Assignment - Student Assignment Tracker</PageTitle>
+
+<div class="add-assignment-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Add Assignment</h1>
+            <p>Add a new assignment and keep track of its deadline.</p>
+        </div>
+
+        <a href="/assignments" class="back-button">
+            ← Back to Assignments
+        </a>
+    </div>
+
+    <div class="assignment-form-card">
+
+        <EditForm Model="@assignment" OnValidSubmit="HandleAddAssignment">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label for="title">Assignment Title</label>
+
+                <InputText id="title"
+                           @bind-Value="assignment.Title"
+                           placeholder="e.g. Database Design Project"
+                           style="width: 100%; height: 48px; padding: 12px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #172554; font-family: inherit; font-size: 14px; outline: none;" />
+
+                <ValidationMessage For="@(() => assignment.Title)" />
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="course">Course</label>
+
+                    <select id="course"
+                            @bind="assignment.Course"
+                            class="form-select">
+                        <option value="">Select a course</option>
+                        <option value="CSE 325">CSE 325 - Software Development</option>
+                        <option value="CSE 310">CSE 310 - Mobile Application Development</option>
+                        <option value="CSE 320">CSE 320 - Database Systems</option>
+                    </select>
+
+                    <ValidationMessage For="@(() => assignment.Course)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+
+                    <InputDate id="dueDate"
+                               @bind-Value="assignment.DueDate"
+                               class="form-input" />
+
+                    <ValidationMessage For="@(() => assignment.DueDate)" />
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+
+                    <select id="priority"
+                            @bind="assignment.Priority"
+                            class="form-select">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+
+                    <select id="status"
+                            @bind="assignment.Status"
+                            class="form-select">
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+
+                <InputTextArea id="description"
+                               @bind-Value="assignment.Description"
+                               placeholder="Enter assignment details..."
+                               style="width: 100%; min-height: 130px; padding: 12px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #172554; font-family: inherit; font-size: 14px; outline: none; resize: vertical;" />
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                <div class="success-message">
+                    @successMessage
+                </div>
+            }
+
+            <div class="form-actions">
+
+                <a href="/assignments" class="cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit" class="submit-button">
+                    Add Assignment
+                </button>
+
+            </div>
+
+        </EditForm>
+
+    </div>
+
+</div>
+
+@code {
+
+    private AssignmentModel assignment = new()
+    {
+        DueDate = DateTime.Today.AddDays(7),
+        Priority = "Medium",
+        Status = "Upcoming"
+    };
+
+    private string? successMessage;
+
+    private void HandleAddAssignment()
+    {
+        successMessage = "Assignment added successfully!";
+
+        // Database functionality will be connected here.
+    }
+
+    private class AssignmentModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(
+            ErrorMessage = "Assignment title is required.")]
+        public string Title { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required(
+            ErrorMessage = "Please select a course.")]
+        public string Course { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required(
+            ErrorMessage = "Due date is required.")]
+        public DateTime DueDate { get; set; }
+
+        public string Priority { get; set; } = "Medium";
+
+        public string Status { get; set; } = "Upcoming";
+
+        public string Description { get; set; } = string.Empty;
+    }
+}
